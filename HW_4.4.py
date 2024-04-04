@@ -3,7 +3,7 @@ import math
 
 def find_dictionary_by_name(phone_info:list , target_name:str):   
     for dictionary in phone_info:
-        if "name" in dictionary and dictionary["name"] == target_name:
+        if dictionary["name"] == target_name:
             return dictionary
     return None
 
@@ -23,7 +23,7 @@ def get_phones_info(file_path:Path):
                     phones_list.append(user_dict)
                 except Exception as ex:
                     print(f"mistake in data structure: {ex}, line: {line}")
-    except FileNotFoundError as ex:
+    except Exception as ex:
         print(f"{ex}")
     return phones_list
 
@@ -38,11 +38,9 @@ def save_to_file(phones_info:list, file_path:Path):
 def add_contact(phones_info:list,name_to_add:str, phone_to_add:str)->str:
     try:
         phones_info.append({"name": name_to_add, "phone": phone_to_add})
-        message = "data added"
+        return "data added"
     except Exception as ex:
-        print(f"{ex}")
-        message = ex
-    return message
+        return f"error in add_contact {ex}"
 
 def change_contact(phones_info:list,name_to_change:str,new_phone:str)->str:
     dict_to_change = {}
@@ -74,7 +72,7 @@ def show_all(phones_info:list):
         i+=1
 
 def parse_input(user_input):
-    cmd, *args = user_input.split('-')
+    cmd, *args = user_input.split(' ')
     cmd = cmd.strip().lower()
     args = [arg.strip() for arg in args]
     return cmd, args
@@ -97,20 +95,20 @@ def main():
             
             case "hello":
                 print("How can I help you?")
-            
-            case "add"|"add contact":
+           
+            case "add":
                 message = add_contact(phones_info, args[0],args[1])
 
-            case "change contact"|"change":
+            case "change":
                 message = change_contact(phones_info, args[0],args[1])
                 
-            case "show contacts"|"all":
+            case "all":
                 show_all(phones_info)
 
-            case "show phone"|"phone":
+            case "phone":
                 message = show_phone(phones_info, args[0])
 
-            case "save to file"|"save":
+            case "save":
                 save_to_file(phones_info,file_path)
 
             case "help"|"?"|"/?":
@@ -118,16 +116,16 @@ def main():
                       "hello" - to say hello to bot   
                       "close" or "exit" - to stop bot
                       commands for contacts: 
-                          "add contact" or "add" with arguments "-Name" and "-Phone" will add contact to database (DB). for example add -NewName -NewPhone
-                          "change contact" or "change" with arguments "-Name" and "-Phone" will change contact in DB
-                          "show contacts" or "all" - to show all contacts in DB
-                          "show phone" or "phone" - with argument "-Name" will show the phone of contact
-                          "save to file" or "save" - save names and phones to file
+                          "add" with arguments "Name" and "Phone" will add contact to database (DB). for example add NewName NewPhone
+                          "change" with arguments "Name" and "Phone" will change contact in DB
+                          "all" - to show all contacts in DB
+                          "phone" - with argument "Name" will show the phone of contact
+                          "save" - save names and phones to file
                     """)
             case _:
                 print("Invalid command. is you need assistance please enter: help")
 
-        if len(message)>0: print(message)
+        print(message)
 
 if __name__ == "__main__":
     main()
